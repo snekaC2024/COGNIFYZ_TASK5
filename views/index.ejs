@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API CRUD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+    
+        h1, h2 {
+            text-align: center;
+        }
+    
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    
+        button:hover {
+            background-color: #cc0000;
+        }
+    
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    
+        input {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+    
+        button[type="submit"] {
+            background-color: #4caf50;
+        }
+    
+        button[type="submit"]:hover {
+            background-color: #388e3c;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>API CRUD - Items List</h1>
+
+    <ul id="item-list">
+        <% items.forEach(item => { %>
+            <li>
+                <%= item.name %> - <%= item.description %>
+                <button onclick="deleteItem('<%= item.id %>')">Delete</button>
+            </li>
+        <% }) %>
+    </ul>
+
+    <h2>Add Item</h2>
+    <form id="itemForm">
+        <input type="text" id="name" placeholder="Item Name" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <button type="submit">Add Item</button>
+    </form>
+
+    <script>
+        document.getElementById("itemForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById("name").value;
+            const description = document.getElementById("description").value;
+
+            fetch('/api/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, description })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        function deleteItem(id) {
+            fetch(`/api/items/${id}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
+ 
